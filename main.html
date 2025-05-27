@@ -6,121 +6,36 @@
     <title>Мусорные контейнеры на карте</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <style>
-        #map {
-            height: 500px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
     <div class="p-3">
-        <h1 style="text-align: center;">Этот сайт покажет мусорные контейнеры по твоей импортированной Excel таблице.</h1>
-        <div style="display: flex; justify-content: center;">
-            <a class="me-3 rounded btn btn-outline-info fs-5" style="width: 250px; height: 75px;" href="https://github.com/harrrdie/Garbage-containers-on-the-map/raw/refs/heads/main/Sample.xlsx">Экспортировать образец Excel таблицы</a>
-            <button id="importButton" class="me-3 rounded btn btn-outline-success fs-5" style="width: 250px; height: 75px;">Импортировать Excel таблицу</button>
-            <input type="file" id="fileInput" style="display: none;">
+        <h1 class="text-center">Этот сайт покажет мусорные контейнеры по твоей импортированной Excel таблице.</h1>
+        <div class="button-container">
+            <a class="me-3 rounded btn btn-outline-info fs-5 sample-btn" href="https://github.com/harrrdie/Garbage-containers-on-the-map/raw/refs/heads/main/Sample.xlsx">Экспортировать образец Excel таблицы</a>
+            <button id="importButton" class="me-3 rounded btn btn-outline-success fs-5 import-btn">Импортировать Excel таблицу</button>
+            <input type="file" id="fileInput" class="file-input">
         </div>
         <div class="mt-3" id="map"></div>
-        <div class="mt-3">
+        <div class="mt-3 legend">
             <h2>Легенда карты:</h2>
-            <div style="display: flex;">
-                <img style="width: 35px; height: 50px;" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"> 
-                <h3 class="ms-3 mt-1">Контейнер или пункт приёма отходов для повторного использования и переработки.</h3>
+            <div class="legend-item">
+                <img class="legend-icon red" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"> 
+                <h3>Контейнер или пункт приёма отходов для повторного использования и переработки.</h3>
             </div>
-            <div class="mt-2" style="display: flex;">
-                <img style="width: 35px; height: 50px;" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png"> 
-                <h3 class="ms-3 mt-1">Урна, мусорная корзина (небольшой контейнер, приспособленный для того, чтобы пешеходы выбрасывали в него мелкий мусор).</h3>
+            <div class="legend-item">
+                <img class="legend-icon yellow" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png"> 
+                <h3>Урна, мусорная корзина (небольшой контейнер, приспособленный для того, чтобы пешеходы выбрасывали в него мелкий мусор).</h3>
             </div>
-            <div class="mt-2" style="display: flex;">
-                <img style="width: 35px; height: 50px;" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png"> 
-                <h3 class="ms-3 mt-1">Мусорный бак среднего или большого размера, как правило, для упакованных бытовых или промышленных отходов.</h3>
+            <div class="legend-item">
+                <img class="legend-icon green" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png"> 
+                <h3>Мусорный бак среднего или большого размера, как правило, для упакованных бытовых или промышленных отходов.</h3>
             </div>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        var map = L.map('map').setView([55.7558, 37.6173], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var redFlagIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',  
-            iconSize: [35, 35],
-            iconAnchor: [15, 45], 
-            popupAnchor: [0, -45] 
-        });
-
-        var yellowFlagIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',  
-            iconSize: [35, 35],
-            iconAnchor: [15, 45], 
-            popupAnchor: [0, -45] 
-        });
-
-        var greenFlagIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',  
-            iconSize: [35, 35],
-            iconAnchor: [15, 45], 
-            popupAnchor: [0, -45] 
-        });
-
-        document.getElementById('importButton').addEventListener('click', function() {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
-
-            var reader = new FileReader();
-            reader.onload = function(evt) {
-                var data = evt.target.result;
-                var workbook = XLSX.read(data, { type: 'binary' });
-                var sheet = workbook.Sheets[workbook.SheetNames[0]];
-                var jsonData = XLSX.utils.sheet_to_json(sheet);
-
-                processExcelData(jsonData);
-            };
-            reader.readAsBinaryString(file);
-        });
-
-        function processExcelData(data) {
-            var markersData = [];
-
-            data.forEach(row => {
-                var lat = row["Широта"];
-                var lon = row["Долгота"];
-                var type = row["Признак"];
-
-                var icon;
-                if (type === "Контейнер") {
-                    icon = redFlagIcon;
-                } else if (type === "Урна") {
-                    icon = yellowFlagIcon;
-                } else if (type === "Мусорный бак") {
-                    icon = greenFlagIcon;
-                }
-                markersData.push({
-                    lat: lat,
-                    lon: lon,
-                    icon: icon,
-                    popupText: type
-                });
-            });
-            addMarkersToMap(markersData);
-        }
-
-        function addMarkersToMap(markersData) {
-            markersData.forEach(marker => {
-                L.marker([marker.lat, marker.lon], { icon: marker.icon }).addTo(map)
-                    .bindPopup(marker.popupText);
-            });
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
