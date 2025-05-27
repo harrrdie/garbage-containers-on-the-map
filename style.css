@@ -1,0 +1,33 @@
+#map {
+    height: 500px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.sample-btn,
+.import-btn {
+    width: 250px;
+    height: 75px;
+}
+
+.file-input {
+    display: none;
+}
+
+.legend-item {
+    display: flex;
+    margin-top: 0.5rem;
+}
+
+.legend-item h3 {
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+}
+
+.legend-icon {
+    width: 35px;
+    height: 50px;
+}
