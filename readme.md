@@ -4,7 +4,8 @@
    - **Широту**
    - **Долготу**
    - **Тип контейнера**
-3. В зависимости от **типа контейнера** добавляется маркер с соответствующим **цветом** на карту.
+   - **Признак контейнера**
+3. В зависимости от **признака контейнера** добавляется маркер с соответствующим **цветом** на карту.
 
 ---
 
@@ -22,24 +23,25 @@
 
 ---
 
-# 🌍 Main algorithm (ENG):
-1. **The user can upload an Excel file** with data.
+# 📊 Main Algorithm (EN):
+1. The user can **upload an Excel file** with data.
 2. The program **reads the data** and extracts:
    - **Latitude**
    - **Longitude**
-   - **Container type**
-3. Depending on the **container type**, a marker with the corresponding **color** is added to the map.
+   - **Container Type**
+   - **Container Marker**
+3. Depending on the **container marker**, a corresponding **color** is added to the map.
 
 ---
 
-# 🛠️ A set of technologies, tools, and libraries used for development (ENG):
+# ⚙️ Set of Technologies, Tools, and Libraries Used (EN):
 
-## 💻 Programming Languages:
-- **HTML5** – The main structure of the page.
-- **CSS** – For styling the elements on the page.
+## 🖥️ Programming Languages:
+- **HTML5** – Main page structure.
+- **CSS** – For styling page elements.
 - **JavaScript** – For dynamic interaction with the map and data processing.
 
 ## 📚 Libraries:
-- **Bootstrap 5.3.0** – For styling UI components.
+- **Bootstrap 5.3.0** – For UI component styling.
 - **Leaflet** – For map display.
-- **SheetJS** – For handling Excel files.
+- **SheetJS** – For working with Excel files.
