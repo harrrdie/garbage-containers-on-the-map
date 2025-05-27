@@ -51,14 +51,15 @@ function processExcelData(data) {
     data.forEach(row => {
         var lat = row["Широта"];
         var lon = row["Долгота"];
-        var type = row["Признак"];
+        var sign = row["Признак"];
+        var type = row["Тип"];
 
         var icon;
-        if (type === "Контейнер") {
+        if (sign === "Заполненный") {
             icon = redFlagIcon;
-        } else if (type === "Урна") {
+        } else if (sign === "Полузаполненный") {
             icon = yellowFlagIcon;
-        } else if (type === "Мусорный бак") {
+        } else if (sign === "Пустой") {
             icon = greenFlagIcon;
         }
         
