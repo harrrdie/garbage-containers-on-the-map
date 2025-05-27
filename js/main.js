@@ -9,21 +9,21 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Create custom icons
 var redFlagIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',  
-    iconSize: [35, 35],
+    iconSize: [25, 35],
     iconAnchor: [15, 45], 
     popupAnchor: [0, -45] 
 });
 
 var yellowFlagIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',  
-    iconSize: [35, 35],
+    iconSize: [25, 35],
     iconAnchor: [15, 45], 
     popupAnchor: [0, -45] 
 });
 
 var greenFlagIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',  
-    iconSize: [35, 35],
+    iconSize: [25, 35],
     iconAnchor: [15, 45], 
     popupAnchor: [0, -45] 
 });
