@@ -1,3 +1,4 @@
+# RU
 # Основной алгоритм:
 1. Пользователь может загрузить файл Excel с данными.
 2. Программа читает данные и извлекает:
@@ -21,6 +22,7 @@
 
 ---
 
+# ENG
 # Main algorithm:
 1. The user can upload an Excel file with data.
 2. The program reads the data and extracts:
