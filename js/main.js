@@ -1,12 +1,9 @@
-// Initialize the map
 var map = L.map('map').setView([55.7558, 37.6173], 13);
 
-// Add OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Create custom icons
 var redFlagIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',  
     iconSize: [25, 35],
@@ -28,7 +25,6 @@ var greenFlagIcon = L.icon({
     popupAnchor: [0, -45] 
 });
 
-// Set up file input handling
 document.getElementById('importButton').addEventListener('click', function() {
     document.getElementById('fileInput').click();
 });
@@ -80,7 +76,6 @@ function processExcelData(data) {
 }
 
 function addMarkersToMap(markersData) {
-    // Clear existing markers first
     map.eachLayer(layer => {
         if (layer instanceof L.Marker) {
             map.removeLayer(layer);
@@ -93,7 +88,6 @@ function addMarkersToMap(markersData) {
             .bindPopup(marker.popupText);
     });
 
-    // Fit map to markers if there are any
     if (markersData.length > 0) {
         var markerGroup = new L.featureGroup(
             markersData.map(m => L.marker([m.lat, m.lon]))
