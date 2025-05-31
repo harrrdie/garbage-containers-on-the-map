@@ -1,98 +1,153 @@
-var map = L.map('map').setView([55.7558, 37.6173], 13);
+document.addEventListener('DOMContentLoaded', function() {
+    const map = L.map('map').setView([55.7558, 37.6173], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+    const redIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        iconSize: [25, 35],
+        iconAnchor: [12, 35],
+        popupAnchor: [0, -35]
+    });
 
-var redFlagIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',  
-    iconSize: [25, 35],
-    iconAnchor: [15, 45], 
-    popupAnchor: [0, -45] 
-});
+    const greenIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        iconSize: [25, 35],
+        iconAnchor: [12, 35],
+        popupAnchor: [0, -35]
+    });
 
-var yellowFlagIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',  
-    iconSize: [25, 35],
-    iconAnchor: [15, 45], 
-    popupAnchor: [0, -45] 
-});
+    let zipFiles = [];
+    let currentMarkers = [];
+    let zipLoaded = false;
+    let zipInstance = null;
 
-var greenFlagIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',  
-    iconSize: [25, 35],
-    iconAnchor: [15, 45], 
-    popupAnchor: [0, -45] 
-});
+    document.querySelectorAll('#importExcelButton').forEach((btn) => {
+        btn.addEventListener('click', function() {
+            document.getElementById('excelInput').click();
+        });
+    });
 
-document.getElementById('importButton').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
-});
+    document.querySelectorAll('#importZipButton').forEach((btn) => {
+        btn.addEventListener('click', function() {
+            document.getElementById('zipInput').click();
+        });
+    });
 
-document.getElementById('fileInput').addEventListener('change', function(e) {
-    var file = e.target.files[0];
-    if (!file) return;
+    document.getElementById('zipInput').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-        var data = evt.target.result;
-        var workbook = XLSX.read(data, { type: 'binary' });
-        var sheet = workbook.Sheets[workbook.SheetNames[0]];
-        var jsonData = XLSX.utils.sheet_to_json(sheet);
-
-        processExcelData(jsonData);
-    };
-    reader.readAsBinaryString(file);
-});
-
-function processExcelData(data) {
-    var markersData = [];
-
-    data.forEach(row => {
-        var lat = row["Широта"];
-        var lon = row["Долгота"];
-        var sign = row["Признак"];
-        var type = row["Тип"];
-
-        var icon;
-        if (sign === "Заполненный") {
-            icon = redFlagIcon;
-        } else if (sign === "Полузаполненный") {
-            icon = yellowFlagIcon;
-        } else if (sign === "Пустой") {
-            icon = greenFlagIcon;
-        }
-        
-        if (lat && lon && icon) {
-            markersData.push({
-                lat: lat,
-                lon: lon,
-                icon: icon,
-                popupText: type
+        try {
+            zipInstance = await JSZip.loadAsync(file);
+            zipFiles = [];
+            
+            Object.keys(zipInstance.files).forEach(filename => {
+                if (filename.match(/\.(jpg|jpeg|png)$/i)) {
+                    zipFiles.push(filename);
+                }
             });
-        }
-    });
-    
-    addMarkersToMap(markersData);
-}
-
-function addMarkersToMap(markersData) {
-    map.eachLayer(layer => {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
+            
+            zipLoaded = true;
+        } catch (error) {
+            console.error('Ошибка чтения ZIP:', error);
+            alert('Ошибка при чтении ZIP архива');
         }
     });
 
-    markersData.forEach(marker => {
-        L.marker([marker.lat, marker.lon], { icon: marker.icon })
-            .addTo(map)
-            .bindPopup(marker.popupText);
+    document.getElementById('excelInput').addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                if (!firstSheet) {
+                    alert('Ошибка: Лист в Excel не найден');
+                    return;
+                }
+
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                if (jsonData.length === 0) {
+                    alert('Ошибка: Excel файл пуст');
+                    return;
+                }
+
+                if (!zipLoaded) {
+                    alert('Сначала загрузите ZIP архив с изображениями');
+                    return;
+                }
+
+                await processExcelData(jsonData);
+            } catch (error) {
+                console.error('Ошибка чтения Excel:', error);
+                alert('Ошибка при чтении Excel файла');
+            }
+        };
+        reader.readAsArrayBuffer(file);
     });
 
-    if (markersData.length > 0) {
-        var markerGroup = new L.featureGroup(
-            markersData.map(m => L.marker([m.lat, m.lon]))
-        );
-        map.fitBounds(markerGroup.getBounds());
+    async function processExcelData(data) {
+        currentMarkers.forEach(marker => map.removeLayer(marker));
+        currentMarkers = [];
+
+        if (data.length === 0) {
+            alert('Excel файл не содержит данных');
+            return;
+        }
+
+        for (const row of data) {
+            const number = row["НомерПлощадки"];
+            const lat = row["Широта"];
+            const lon = row["Долгота"];
+
+            if (!lat || !lon) {
+                console.warn(`Пропущена запись с неправильными координатами: ${number}`);
+                continue;
+            }
+
+            const hasImage = zipFiles.some(file => {
+                const fileName = file.split('/').pop();
+                return fileName.startsWith(`${number}_`);
+            });
+
+            let popupContent = ` 
+                <b>Наименование:</b> ${row["Наименование"] || 'Нет данных'}<br>
+                <b>Номер площадки:</b> ${number || 'Нет данных'}<br>
+                <b>Район:</b> ${row["Район"] || 'Нет данных'}<br>
+                <b>График:</b> ${row["График"] || 'Нет данных'}
+            `;
+
+            if (hasImage && zipInstance) {
+                const imageFile = zipFiles.find(file => {
+                    const fileName = file.split('/').pop();
+                    return fileName.startsWith(`${number}_`);
+                });
+
+                try {
+                    const imageFileBlob = await zipInstance.file(imageFile).async('blob');
+                    const imageUrl = URL.createObjectURL(imageFileBlob);
+                    popupContent += `<br><img src="${imageUrl}" style="max-width: 200px; margin-top: 10px;">`;
+                } catch (error) {
+                    console.error('Ошибка загрузки изображения:', error);
+                }
+            }
+
+            const marker = L.marker([lat, lon], {
+                icon: hasImage ? greenIcon : redIcon
+            }).addTo(map).bindPopup(popupContent);
+
+            currentMarkers.push(marker);
+        }
+
+        if (currentMarkers.length > 0) {
+            const markerGroup = new L.featureGroup(currentMarkers);
+            map.fitBounds(markerGroup.getBounds());
+        }
     }
-}
+});
