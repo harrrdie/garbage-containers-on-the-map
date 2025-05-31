@@ -23,7 +23,7 @@
 - **Leaflet** – Для работы с картами
 - **SheetJS (xlsx)** – Для чтения Excel файлов
 - **JSZip** – Для работы с ZIP архивами
-- **Bootstrap 5** – Для оформления интерфейса
+- **Bootstrap 5.3.0** – Для оформления интерфейса
 
 ---
 
@@ -52,4 +52,4 @@
 - **Leaflet** – For maps
 - **SheetJS (xlsx)** – For Excel files
 - **JSZip** – For ZIP archives
-- **Bootstrap 5** – For UI styling
+- **Bootstrap 5.3.0** – For UI styling
