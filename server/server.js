@@ -7,20 +7,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Инициализация Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post('/api/generate-markers', async (req, res) => {
     const { city, count } = req.body;
 
     try {
-        // 1. Получаем координаты города
         const coords = await getCityCoordinates(city);
         if (!coords) {
             return res.status(404).json({ error: 'Город не найден' });
         }
 
-        // 2. Генерируем маркеры через Gemini
         const markers = await generateWithGemini(coords, count);
         
         res.json(markers);
@@ -75,7 +72,6 @@ async function generateWithGemini(coords, count) {
     const response = await result.response;
     const text = response.text();
     
-    // Парсим JSON из текстового ответа
     const startIdx = text.indexOf('{');
     const endIdx = text.lastIndexOf('}') + 1;
     return JSON.parse(text.slice(startIdx, endIdx)).markers;
