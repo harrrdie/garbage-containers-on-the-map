@@ -2,22 +2,14 @@ RU
 Инструкция по запуску:
 1. Открыть папку "server"
 2. Вписать свой API ключ Gemini AI (GEMINI_API_KEY=) в файл ".env"
-3. Открыть cmd в корневой папке
-4. Прописать следующие строчки в консоль:
-cd server
-npm init -y
-npm install express cors dotenv @google/generative-ai
-node server.js
-5. Запустить файл index.html
+3. Открыть cmd в папке "server"
+4. Прописать node server.js в консоль:
+5. Перейти по ссылке представленной в консоли.
 
-ENG:
+EN
 Launch instructions:
-1. Open the address "server"
-2. Enter your Gemini AI API key (GEMINI_API_KEY=) in the file ".env"
-3. Open cmd in the root folder.
-4. Write the following lines in the console:
-CD-server
-NPM initialization -y
-npm install express cors dotenv @google/generative-ai
-node server.js
-5. Run the file index.html.
+1. Open the "server" folder
+2. Enter your Gemini AI API key (GEMINI_API_KEY=) in the ".env" file
+3. Open cmd in the folder "server"
+4. Enter node server.js in the console:
+5. Follow the link provided in the console.
