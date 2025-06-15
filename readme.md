@@ -1,61 +1,37 @@
-# 📊 Основной алгоритм (RU):
-1. **Пользователь вводит город и количество флажков** для генерации.
-2. Программа **отправляет запрос к ИИ-сервису** и получает:
-   - **Широту**
-   - **Долготу**  
-   - **Тип контейнера**
-   - **Адрес расположения**
-   - **Обоснование выбора места**
-3. На карту добавляются **маркеры с описанием** в виде всплывающих окон.
-4. Пользователь может **сохранить данные** в Excel-файл.
-
----
-
-# ⚙️ Набор технологий, инструментов и библиотек, которые использовались для создания (RU):
+# ⚙️ Набор технологий, инструментов и библиотек (RU):
 
 ## 🖥️ Языки программирования:
-- **HTML5** – Структура веб-страницы
-- **CSS** – Стилизация интерфейса
-- **JavaScript** – Логика работы приложения
+- **HTML5** – Структура страницы
+- **CSS** – Стилизация элементов (glassmorphism)
+- **JavaScript** – Основная логика приложения
 
 ## 📚 Библиотеки:
-- **Bootstrap 5.3.0** – Готовые UI-компоненты
-- **Leaflet** – Интерактивная карта
-- **SheetJS** – Генерация Excel-файлов
-- **Google Gemini API** – ИИ для генерации мест
+- **Leaflet** – Работа с картами
+- **Leaflet Routing Machine** – Построение маршрутов
+- **SheetJS (xlsx)** – Экспорт в Excel
+- **Bootstrap 5.3.0** – Оформление интерфейса
+- **Google Generative AI** – Генерация реалистичных данных
 
-## 🛠️ Инструменты:
-- **Node.js** – Серверная часть
-- **Express** – Обработка API-запросов
-
----
-
-# 📊 Main Algorithm (EN):
-1. **User enters city and marker count** for generation.
-2. Program **sends request to AI service** and receives:
-   - **Latitude**  
-   - **Longitude**
-   - **Container type**
-   - **Location address**
-   - **Placement reasoning**
-3. **Markers with popup descriptions** are added to the map.
-4. User can **export data** to Excel file.
+## 🖼️ Дополнительно:
+- **Nominatim API** – Геокодирование городов
+- **Bootstrap Icons** – Иконки интерфейса
 
 ---
 
-# ⚙️ Set of Technologies, Tools, and Libraries Used (EN):
+# ⚙️ Set of Technologies, Tools and Libraries (EN):
 
 ## 🖥️ Programming Languages:
 - **HTML5** – Page structure
-- **CSS** – Interface styling
+- **CSS** – Elements styling (glassmorphism)
 - **JavaScript** – Application logic
 
 ## 📚 Libraries:
-- **Bootstrap 5.3.0** – UI components
-- **Leaflet** – Interactive map
-- **SheetJS** – Excel file generation
-- **Google Gemini API** – AI for location generation
+- **Leaflet** – Maps interaction
+- **Leaflet Routing Machine** – Routes building
+- **SheetJS (xlsx)** – Excel export
+- **Bootstrap 5.3.0** – UI styling
+- **Google Generative AI** – Realistic data generation
 
-## 🛠️ Tools:
-- **Node.js** – Backend server
-- **Express** – API request handling
+## 🖼️ Additional:
+- **Nominatim API** – City geocoding
+- **Bootstrap Icons** – Interface icons
